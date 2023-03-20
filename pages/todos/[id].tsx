@@ -1,7 +1,8 @@
-import { useRouter } from "next/router"
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 const Todo = () => {
+  const router = useRouter();
 
   const [newTitle, setNewTitle] = useState('');
   return (
@@ -17,9 +18,9 @@ const Todo = () => {
         <button>編集する</button>
       </div>
       <div>
-        <p>{todo.title}</p>
+        <p>{router.query.title}</p>
         <select
-          value={todo.status}
+          value={router.query.status}
         >
           <option>未着手</option>
           <option>作業中</option>
