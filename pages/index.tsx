@@ -1,7 +1,7 @@
 import { db } from '@/lib/firebase';
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
-import { collection, addDoc, getDocs, query, orderBy, onSnapshot } from "firebase/firestore";
+import { collection, addDoc, getDocs, query, orderBy, onSnapshot, deleteDoc, doc } from "firebase/firestore";
 import { async } from '@firebase/util';
 import Link from 'next/link';
 import { atom, useRecoilState } from 'recoil';
@@ -15,27 +15,11 @@ type Todo = {
 
 export default function Home() {
   const [todos, setTodos] = useState<any>([])
-  const [todoTitle, setTodoTitle] = useState<string>('');
-  // const [todoId, setTodoId] = useState<number>(0)
-  // idをページ変更や更新しても保持したい
-  const { persistAtom } = recoilPersist();
-  const idState = atom({
-    key: 'id',
-    default: 0,
-    effects_UNSTABLE: [persistAtom]
-  });
-  const [todoId, setTodoId] = useRecoilState(idState)
+  const [newTitle, setNewTitle] = useState('');
 
-   const handleAddTodo = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (todoTitle === '') return;
-    await addDoc(collection(db, 'todos'), {
-      id: todoId,
-      title: todoTitle,
-      status: 'notStarted',
-    });
-    setTodoId(todoId + 1);
-    setTodoTitle('');
+  const onClickDelete = async(id: any) => {
+    const deleteTodo = doc(db, 'todos', id);
+    await deleteDoc(deleteTodo);
   }
 
   useEffect(() => {
@@ -67,8 +51,8 @@ export default function Home() {
                   <option>作業中</option>
                   <option>完了</option>
                 </select>
-                <button>編集</button>
-                <button>削除</button>
+                <Link href={`/todos/${todo.id}`}><button>編集</button></Link>
+                <button onClick={()=> onClickDelete(todo.id)}>削除</button>
               </li>
             )
           })}
