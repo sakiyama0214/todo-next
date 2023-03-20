@@ -2,8 +2,7 @@ import { useRouter } from "next/router"
 import { useState } from "react";
 
 const Todo = () => {
-  const router = useRouter();
-  const {id} = router.query;
+
   const [newTitle, setNewTitle] = useState('');
   return (
     <>
